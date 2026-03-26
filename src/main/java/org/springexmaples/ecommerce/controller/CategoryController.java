@@ -1,16 +1,13 @@
 package org.springexmaples.ecommerce.controller;
 
-import org.jspecify.annotations.Nullable;
 import org.springexmaples.ecommerce.model.Category;
 import org.springexmaples.ecommerce.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController                   //contoller files is used fully for only api all the logic will be in servide layer add some bussiner logic in serivce now..
@@ -22,15 +19,17 @@ public class CategoryController {
 
 
 @GetMapping("/api/public/categories")
-    public List<Category> getCategories() {
-        return categoryService.getCategories();
+    public ResponseEntity<List<Category>> getCategories() {
+        List<Category> categories = categoryService.getCategories();
+    return new ResponseEntity<>(categories,HttpStatus.OK);
     }
 
 
 @PostMapping("/api/admin/categories")
-    public String createCategories(@RequestBody Category category){
+    public ResponseEntity<String> createCategories(@RequestBody Category category){
    categoryService.createCategory(category);
-    return "Categories Added Successfully";
+    return  new ResponseEntity<>("Categories Added Successfully",HttpStatus.CREATED);
+    //ResponseEntity.created("Categories Added Successfully") Second type of Enity usage anothe one is --- ResponseEntity.status(HttpStatus.ok).body(status) ---
     }
 
  @DeleteMapping("/api/admin/categories/{categoryId}")
@@ -39,8 +38,20 @@ public class CategoryController {
         String status = categoryService.deleteCategory(categoryId);
         return new ResponseEntity<>(status, HttpStatus.OK);
     } catch (ResponseStatusException e) {
-        return new ResponseEntity<>(e.getReason(),e.getStatusCode());
+        return new ResponseEntity<>(e.getReason(),e.getStatusCode());  // one type Respone Enity Usage
     }
 
  }
+
+
+    @PutMapping("/api/admin/categories/{categoryId}")
+    public ResponseEntity<String> deleteCategory(@RequestBody Category category,@PathVariable Long categoryId){
+        try {
+             categoryService.updateCategory(category,categoryId);
+            return new ResponseEntity<>("Category id :"+categoryId +" is Updated", HttpStatus.OK);
+        } catch (ResponseStatusException e) {
+            return new ResponseEntity<>(e.getReason(),e.getStatusCode());  // one type Respone Enity Usage
+        }
+
+    }
 }
