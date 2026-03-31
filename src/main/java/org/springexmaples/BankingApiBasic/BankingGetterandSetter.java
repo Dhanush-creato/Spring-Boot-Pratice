@@ -1,4 +1,4 @@
-package org.springexmaples.BankingApi;
+package org.springexmaples.BankingApiBasic;
 
 public class BankingGetterandSetter {
     String message;
