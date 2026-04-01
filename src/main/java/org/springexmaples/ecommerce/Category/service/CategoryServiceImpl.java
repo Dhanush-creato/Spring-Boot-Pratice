@@ -1,23 +1,21 @@
-package org.springexmaples.ecommerce.service;
+package org.springexmaples.ecommerce.Category.service;
 
-import org.springexmaples.ecommerce.Reposistory.CategoryReposistory;
-import org.springexmaples.ecommerce.model.Category;
+import org.springexmaples.ecommerce.Category.Reposistory.CategoryReposistory;
+import org.springexmaples.ecommerce.Category.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
 
 
 //    private  List<Category> categories = new ArrayList<>();
     @Autowired
-    CategoryReposistory categoryReposistory;
+CategoryReposistory categoryReposistory;
    // it should wrapper clasess otherwise it will give null
 
     @Override

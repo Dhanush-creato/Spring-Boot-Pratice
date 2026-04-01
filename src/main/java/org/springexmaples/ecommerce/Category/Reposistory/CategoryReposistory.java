@@ -1,6 +1,6 @@
-package org.springexmaples.ecommerce.Reposistory;
+package org.springexmaples.ecommerce.Category.Reposistory;
 
-import org.springexmaples.ecommerce.model.Category;
+import org.springexmaples.ecommerce.Category.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryReposistory extends JpaRepository<Category,Long> {

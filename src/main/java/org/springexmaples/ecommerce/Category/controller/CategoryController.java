@@ -1,7 +1,8 @@
-package org.springexmaples.ecommerce.controller;
+package org.springexmaples.ecommerce.Category.controller;
 
-import org.springexmaples.ecommerce.model.Category;
-import org.springexmaples.ecommerce.service.CategoryService;
+import jakarta.validation.Valid;
+import org.springexmaples.ecommerce.Category.model.Category;
+import org.springexmaples.ecommerce.Category.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class CategoryController {
 
 
 @PostMapping("/api/admin/categories")
-    public ResponseEntity<String> createCategories(@RequestBody Category category){
+    public ResponseEntity<String> createCategories(@Valid @RequestBody Category category){
    categoryService.createCategory(category);
     return  new ResponseEntity<>("Categories Added Successfully",HttpStatus.CREATED);
     //ResponseEntity.created("Categories Added Successfully") Second type of Enity usage anothe one is --- ResponseEntity.status(HttpStatus.ok).body(status) ---
@@ -45,7 +46,7 @@ public class CategoryController {
 
 
     @PutMapping("/api/admin/categories/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@RequestBody Category category,@PathVariable Long categoryId){
+    public ResponseEntity<String> deleteCategory(@RequestBody Category category, @PathVariable Long categoryId){
         try {
              categoryService.updateCategory(category,categoryId);
             return new ResponseEntity<>("Category id :"+categoryId +" is Updated", HttpStatus.OK);

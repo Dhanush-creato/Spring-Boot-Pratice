@@ -1,5 +1,6 @@
 package org.springexmaples.StudentMangament.controller;
 
+import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springexmaples.StudentMangament.model.Students;
 import org.springexmaples.StudentMangament.service.StudentService;
@@ -26,7 +27,7 @@ public class StudentController {
 
 
     @PostMapping("/createDetiles")
-    public String createStudentDetiles(@RequestBody Students students){
+    public String createStudentDetiles( @Valid @RequestBody Students students){
         studentService.createStudentDetiles(students);
         return "Student Detiles Added";
     }

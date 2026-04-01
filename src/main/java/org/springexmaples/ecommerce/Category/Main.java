@@ -1,4 +1,4 @@
-package org.springexmaples.ecommerce;
+package org.springexmaples.ecommerce.Category;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

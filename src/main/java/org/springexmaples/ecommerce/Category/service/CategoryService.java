@@ -1,6 +1,6 @@
-package org.springexmaples.ecommerce.service;
+package org.springexmaples.ecommerce.Category.service;
 
-import org.springexmaples.ecommerce.model.Category;
+import org.springexmaples.ecommerce.Category.model.Category;
 
 import java.util.List;
 

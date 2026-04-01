@@ -1,9 +1,9 @@
 package org.springexmaples.TaskManager.Controller;
 
+import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springexmaples.TaskManager.Model.TaskManager;
 import org.springexmaples.TaskManager.Service.TaskManagerService;
-import org.springexmaples.ecommerce.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class TaskManagerController {
         return taskManagerService.getTask();
     }
     @PostMapping("/admin/createTask")
-    public ResponseEntity<String> createTask(@RequestBody TaskManager taskManager){
+    public ResponseEntity<String> createTask(@Valid @RequestBody TaskManager taskManager){
 
            taskManagerService.createTask(taskManager);
            return new ResponseEntity<>("Task has been Added Successfully",HttpStatus.CREATED);
