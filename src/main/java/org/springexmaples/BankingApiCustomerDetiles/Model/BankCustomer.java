@@ -1,6 +1,9 @@
 package org.springexmaples.BankingApiCustomerDetiles.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,11 +18,15 @@ public class BankCustomer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
    
     private Long id;
+    @NotEmpty(message = "First Name Should Contain")
     private String firstName;
     private String lastName;
     @Column(unique = true)
+    @NotEmpty
     private String email;
-    private Long phoneNumber;
+    @Column(unique = true)
+    @Size(min=10 ,message = "Should Contain 10 Numbers")
+    private String phoneNumber;
 
 //    public Long getId() {
 //        return id;

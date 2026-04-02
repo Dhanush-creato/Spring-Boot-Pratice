@@ -31,23 +31,20 @@ public class TaskManagerController {
     }
     @DeleteMapping("/admin/deleteTask/{taskManagerId}")
     public ResponseEntity<String> deleteTask(@PathVariable Long taskManagerId){
-        try {
+
             String status =  taskManagerService.deleteTask(taskManagerId);
             return new ResponseEntity<>(status,HttpStatus.OK);
-        }
-        catch(ResponseStatusException e){
-           return  new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+
+
         
     }
     @PutMapping("/admin/updateTask/{taskManagerId}")
-    public ResponseEntity< String> updatTask(@RequestBody TaskManager taskManager, @PathVariable Long taskManagerId){
-        try{
+    public ResponseEntity< String> updatTask(@Valid @RequestBody TaskManager taskManager, @PathVariable Long taskManagerId){
+
         taskManagerService.updateTask(taskManager,taskManagerId);
         return new ResponseEntity<>("Category id :"+taskManagerId +" is Updated", HttpStatus.OK);
 
-        } catch (ResponseStatusException e) {
-        return new ResponseEntity<>(e.getReason(),e.getStatusCode());  // one type Respone Enity Usage
-    }
+          // one type Respone Enity Usage
+
     }
 }

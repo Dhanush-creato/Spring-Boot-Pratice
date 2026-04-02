@@ -1,5 +1,6 @@
 package org.springexmaples.BankingApiCustomerDetiles.Controller;
 
+import jakarta.validation.Valid;
 import org.springexmaples.BankingApiCustomerDetiles.Model.BankCustomer;
 import org.springexmaples.BankingApiCustomerDetiles.Service.BankCustomerService;
 
@@ -28,7 +29,7 @@ public class BankCustomerController {
         return new ResponseEntity<>(customer,HttpStatus.OK);
     }
     @PostMapping("/api/postCustomers")
-    public ResponseEntity<String> postCustomers(@RequestBody BankCustomer bankCustomer){
+    public ResponseEntity<String> postCustomers(@Valid @RequestBody BankCustomer bankCustomer){
         bankCustomerService.postCustomer(bankCustomer);
         return new ResponseEntity<>("File is Updated",HttpStatus.CREATED) ;
     }

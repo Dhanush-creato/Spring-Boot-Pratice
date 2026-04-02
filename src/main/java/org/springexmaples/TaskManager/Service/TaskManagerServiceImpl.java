@@ -1,7 +1,9 @@
 package org.springexmaples.TaskManager.Service;
 
+import org.springexmaples.BankingApiCustomerDetiles.Exception.ResourceNotFoundException;
 import org.springexmaples.TaskManager.Model.TaskManager;
 import org.springexmaples.TaskManager.Repo.TaskManagerRepo;
+import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,30 +15,32 @@ import java.util.Optional;
 
 @Service
 public class TaskManagerServiceImpl implements  TaskManagerService{
-//    private List<TaskManager> taskManagers = new ArrayList<>();
+
     @Autowired
     TaskManagerRepo taskManagerRepo;
-//    private Long nextId = 1L;
+
 
     @Override
     public List<TaskManager> getTask() {
-
+        if(taskManagerRepo.findAll().isEmpty()){
+            throw new ApiExecption("No Task -->Create a Task!!!");
+        }
         return taskManagerRepo.findAll();
     }
 
     @Override
     public void createTask(TaskManager taskManager) {
-//        taskManager.setTaskMangerId(nextId++);
+        TaskManager availableTask = taskManagerRepo.findByTask(taskManager.getTask());
+        if(availableTask !=null){
+            throw new ApiExecption("This Task:"+taskManager.getTask()+" is Available");
+        }
        taskManagerRepo.save(taskManager);
     }
 
     @Override
     public String deleteTask(Long taskManagerId) {
-//        TaskManager taskManager = (taskManagers.stream()
-//                .filter(c -> c.getTaskMangerId().equals(taskManagerId)).findFirst()
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task is Not found ")));
 TaskManager deleteTask= taskManagerRepo.findById(taskManagerId)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource Not found"));
+                .orElseThrow(()->new ResourceNotFoundException("Task","Task ID",taskManagerId));
 
 
         taskManagerRepo.delete(deleteTask);
@@ -48,17 +52,8 @@ TaskManager deleteTask= taskManagerRepo.findById(taskManagerId)
 
     @Override
     public TaskManager updateTask(TaskManager taskManager,Long taskManagerId) {
-//        Optional<TaskManager> updateManager = (taskManagers.stream()
-//                .filter(c -> c.getTaskMangerId().equals(taskManagerId)).findFirst());
-//        if(updateManager.isPresent()) {
-//            TaskManager get = updateManager.get();
-//            return get.setTask(taskManager.getTask());
-//        }
-//         else{
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Task Id not found");
-//        }
        taskManagerRepo.findById(taskManagerId)
-                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource Not found to Update"));
+                 .orElseThrow(()-> new ResourceNotFoundException("Task","Task ID",taskManagerId));
 
          taskManager.setTaskMangerId(taskManagerId);
 

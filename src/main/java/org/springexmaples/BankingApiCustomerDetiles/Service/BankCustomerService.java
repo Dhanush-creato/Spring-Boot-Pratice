@@ -1,5 +1,6 @@
 package org.springexmaples.BankingApiCustomerDetiles.Service;
 
+import org.springexmaples.BankingApiCustomerDetiles.Exception.ResourceNotFoundException;
 import org.springexmaples.BankingApiCustomerDetiles.Model.BankCustomer;
 import org.springexmaples.BankingApiCustomerDetiles.Repo.BankCustomerEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,14 @@ public class BankCustomerService implements BankCustomerServiceImpl {
     @Override
     public void deleteCustomer(Long id) {
        BankCustomer deleteElement = bankCustomerEntity.findById(id)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource Not Found"));
+                .orElseThrow(()->new ResourceNotFoundException("Customers","Customer Id",id));
         bankCustomerEntity.delete(deleteElement);
     }
 
     @Override
     public void updateCustomer( BankCustomer bankCustomer,Long id) {
          bankCustomerEntity.findById(id)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
+                .orElseThrow(()->new ResourceNotFoundException("CustomerName","Customer Id",id));
 
         bankCustomer.setId(id);
         bankCustomerEntity.save(bankCustomer);

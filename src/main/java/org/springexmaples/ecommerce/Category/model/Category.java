@@ -1,10 +1,7 @@
 package org.springexmaples.ecommerce.Category.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -17,6 +14,7 @@ public class Category {
     private Long categoryId;
     @NotBlank(message = "Category Name should not be Blank")
     @Size(min = 5,message = "Category Name Should be min 5 Charters")
+
     private  String categoryName ;
 
     public Long getCategoryId() {
@@ -24,6 +22,7 @@ public class Category {
     }
 
     public void setCategoryId(Long categoryId) {
+
         this.categoryId = categoryId;
     }
 

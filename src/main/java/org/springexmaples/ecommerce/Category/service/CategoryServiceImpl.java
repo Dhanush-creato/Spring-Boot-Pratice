@@ -1,5 +1,7 @@
 package org.springexmaples.ecommerce.Category.service;
 
+import org.springexmaples.BankingApiCustomerDetiles.Exception.ResourceNotFoundException;
+import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
 import org.springexmaples.ecommerce.Category.Reposistory.CategoryReposistory;
 import org.springexmaples.ecommerce.Category.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,18 @@ CategoryReposistory categoryReposistory;
 
     @Override
     public List<Category> getCategories() {
+        if(categoryReposistory.findAll().isEmpty()){
+            throw new ApiExecption("There is not Category's present");
+        }
         return categoryReposistory.findAll();
     }
 
     @Override
     public void createCategory(Category category) {
-
-
+        Category savedCtaegoty = categoryReposistory.findByCategoryName(category.getCategoryName());
+        if(savedCtaegoty !=null){
+            throw new ApiExecption("Category with name " +category.getCategoryName()+" is found");
+        }
         categoryReposistory.save(category);
     }
 
@@ -34,7 +41,8 @@ CategoryReposistory categoryReposistory;
     public String deleteCategory(Long categoryId) {
 
 
-        Category deleteCategory = categoryReposistory.findById(categoryId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Resourece not found"));
+        Category deleteCategory = categoryReposistory.findById(categoryId)
+                .orElseThrow(()->new ResourceNotFoundException("Category","Category Id",categoryId));
 
 //        List<Category> categories = categoryReposistory.findAll();
 //        Category category = categories.stream()
@@ -50,7 +58,7 @@ CategoryReposistory categoryReposistory;
     @Override
     public Category updateCategory(Category category, Long categoryId) {
        categoryReposistory.findById(categoryId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Response not found"));  // it will find the id file and return error
+                .orElseThrow(()-> new ResourceNotFoundException("Category","Category Id",categoryId));  // it will find the id file and return error
 
         category.setCategoryId(categoryId); // what will give in update will set the given id and will update in category list
         return categoryReposistory.save(category);        // it will save and return

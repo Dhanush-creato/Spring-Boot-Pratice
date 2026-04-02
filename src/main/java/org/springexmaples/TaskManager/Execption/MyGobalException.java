@@ -1,5 +1,7 @@
 package org.springexmaples.TaskManager.Execption;
 
+import org.springexmaples.BankingApiCustomerDetiles.Exception.ResourceNotFoundException;
+import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -23,5 +25,15 @@ public class MyGobalException {
         });
         return new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST);
 
+    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> myResourceNotFoundException(ResourceNotFoundException e){
+        String message = e.getMessage();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(ApiExecption.class)
+    public ResponseEntity<String> myApiExpection(ApiExecption e){
+        String message = e.getMessage();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
     }
 }
