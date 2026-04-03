@@ -1,13 +1,15 @@
 package org.springexmaples.ecommerce.Category.service;
 
 import org.springexmaples.ecommerce.Category.model.Category;
+import org.springexmaples.ecommerce.Category.payload.CategoryDTO;
+import org.springexmaples.ecommerce.Category.payload.CategoryResponse;
 
 import java.util.List;
 
 public interface CategoryService {
 
-     List<Category> getCategories();
-     void createCategory(Category category);
+     CategoryResponse getCategories();
+    CategoryDTO createCategory(CategoryDTO categoryDTO);
 
     String deleteCategory(Long categoryId);
 

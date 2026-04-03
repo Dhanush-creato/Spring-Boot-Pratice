@@ -1,13 +1,14 @@
 package org.springexmaples.ecommerce.Category.service;
 
+import org.modelmapper.ModelMapper;
 import org.springexmaples.BankingApiCustomerDetiles.Exception.ResourceNotFoundException;
 import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
 import org.springexmaples.ecommerce.Category.Reposistory.CategoryReposistory;
 import org.springexmaples.ecommerce.Category.model.Category;
+import org.springexmaples.ecommerce.Category.payload.CategoryDTO;
+import org.springexmaples.ecommerce.Category.payload.CategoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,22 +20,36 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
 CategoryReposistory categoryReposistory;
    // it should wrapper clasess otherwise it will give null
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
-    public List<Category> getCategories() {
-        if(categoryReposistory.findAll().isEmpty()){
+    public CategoryResponse getCategories() {
+        List<Category> categories = categoryReposistory.findAll();
+        if(categories.isEmpty()){
             throw new ApiExecption("There is not Category's present");
         }
-        return categoryReposistory.findAll();
+        List<CategoryDTO> categoryDTOS = categories.stream()
+                .map(category -> modelMapper.map(category, CategoryDTO.class))
+                        .toList();
+
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setContent(categoryDTOS);
+        return categoryResponse ;
     }
 
     @Override
-    public void createCategory(Category category) {
-        Category savedCtaegoty = categoryReposistory.findByCategoryName(category.getCategoryName());
-        if(savedCtaegoty !=null){
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+ Category category = modelMapper.map(categoryDTO, Category.class); // to convert from Dto to category  and assign to category
+        Category savedCategory = categoryReposistory.findByCategoryName(category.getCategoryName());
+        if(savedCategory !=null){
             throw new ApiExecption("Category with name " +category.getCategoryName()+" is found");
         }
-        categoryReposistory.save(category);
+
+
+        Category savedCategorieToConvert = categoryReposistory.save(category);
+        CategoryDTO savedCategoryDto = modelMapper.map(savedCategorieToConvert, CategoryDTO.class);
+        return  savedCategoryDto;
     }
 
     @Override
