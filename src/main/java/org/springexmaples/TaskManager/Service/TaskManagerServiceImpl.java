@@ -1,8 +1,12 @@
 package org.springexmaples.TaskManager.Service;
 
+import org.modelmapper.ModelMapper;
 import org.springexmaples.BankingApiCustomerDetiles.Exception.ResourceNotFoundException;
+import org.springexmaples.StudentMangament.payload.StudentRequestDTO;
 import org.springexmaples.TaskManager.Model.TaskManager;
 import org.springexmaples.TaskManager.Repo.TaskManagerRepo;
+import org.springexmaples.TaskManager.payload.TaskRequestDTO;
+import org.springexmaples.TaskManager.payload.TaskResponseDTO;
 import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,44 +22,65 @@ public class TaskManagerServiceImpl implements  TaskManagerService{
 
     @Autowired
     TaskManagerRepo taskManagerRepo;
+    @Autowired
+    ModelMapper modelMapper;
 
 
     @Override
-    public List<TaskManager> getTask() {
-        if(taskManagerRepo.findAll().isEmpty()){
+    public TaskResponseDTO getTask() {
+        List<TaskManager> getTaskData = taskManagerRepo.findAll();
+
+        if(getTaskData.isEmpty()){
             throw new ApiExecption("No Task -->Create a Task!!!");
         }
-        return taskManagerRepo.findAll();
+        List<TaskRequestDTO> getTaskListDTO = getTaskData.stream()
+                .map(taskManager -> modelMapper.map(taskManager,TaskRequestDTO.class))
+                .toList();
+
+        TaskResponseDTO taskResponseDTO = new TaskResponseDTO();
+       taskResponseDTO.setTaskData(getTaskListDTO);
+
+        return taskResponseDTO;
     }
 
     @Override
-    public void createTask(TaskManager taskManager) {
+    public TaskRequestDTO createTask(TaskRequestDTO taskRequestDTO) {
+        TaskManager taskManager = modelMapper.map(taskRequestDTO, TaskManager.class);
+
         TaskManager availableTask = taskManagerRepo.findByTask(taskManager.getTask());
         if(availableTask !=null){
             throw new ApiExecption("This Task:"+taskManager.getTask()+" is Available");
         }
-       taskManagerRepo.save(taskManager);
+       TaskManager createdTask = taskManagerRepo.save(taskManager);
+        TaskRequestDTO savedTask = modelMapper.map(createdTask, TaskRequestDTO.class);
+        return savedTask;
+
     }
 
     @Override
-    public String deleteTask(Long taskManagerId) {
+    public TaskRequestDTO deleteTask(Long taskManagerId) {
+
 TaskManager deleteTask= taskManagerRepo.findById(taskManagerId)
                 .orElseThrow(()->new ResourceNotFoundException("Task","Task ID",taskManagerId));
 
 
         taskManagerRepo.delete(deleteTask);
-        return "task "+ taskManagerId +"is deleted";
+        TaskRequestDTO deletedTaskDTO = modelMapper.map(deleteTask, TaskRequestDTO.class);
+        return deletedTaskDTO;
 
 
 
     }
 
     @Override
-    public TaskManager updateTask(TaskManager taskManager,Long taskManagerId) {
+    public TaskRequestDTO updateTask(TaskRequestDTO taskRequestDTO,Long taskManagerId) {
+        TaskManager taskManager = modelMapper.map(taskRequestDTO, TaskManager.class);
        taskManagerRepo.findById(taskManagerId)
                  .orElseThrow(()-> new ResourceNotFoundException("Task","Task ID",taskManagerId));
 
          taskManager.setTaskMangerId(taskManagerId);
 
-        return  taskManagerRepo.save(taskManager);
+        TaskManager updatedTask = taskManagerRepo.save(taskManager);
+        TaskRequestDTO  updatedTaskDTO = modelMapper.map(updatedTask, TaskRequestDTO.class);
+        return updatedTaskDTO ;
     }}

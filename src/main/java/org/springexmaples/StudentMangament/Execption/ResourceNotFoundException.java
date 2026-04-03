@@ -1,4 +1,4 @@
-package org.springexmaples.ecommerce.Category.Execption;
+package org.springexmaples.StudentMangament.Execption;
 
 import lombok.NoArgsConstructor;
 

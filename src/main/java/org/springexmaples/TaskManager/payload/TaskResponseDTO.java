@@ -1,14 +1,14 @@
-package org.springexmaples.StudentMangament.payload;
+package org.springexmaples.TaskManager.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentResponseDTO {
-
-    private List<StudentRequestDTO> studentData;
+public class TaskResponseDTO {
+    private List<TaskRequestDTO> taskData;
 }

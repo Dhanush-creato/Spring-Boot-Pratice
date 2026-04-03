@@ -3,6 +3,8 @@ package org.springexmaples.StudentMangament.controller;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springexmaples.StudentMangament.model.Students;
+import org.springexmaples.StudentMangament.payload.StudentRequestDTO;
+import org.springexmaples.StudentMangament.payload.StudentResponseDTO;
 import org.springexmaples.StudentMangament.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,37 +22,31 @@ public class StudentController {
 
 
     @GetMapping("/getDetiles")
-    public List<Students> getStudentDetiles(){
+    public StudentResponseDTO getStudentDetiles(){
        return studentService.getStudentDetiles();
     }
 
 
 
     @PostMapping("/createDetiles")
-    public String createStudentDetiles( @Valid @RequestBody Students students){
-        studentService.createStudentDetiles(students);
-        return "Student Detiles Added";
+    public StudentRequestDTO createStudentDetiles( @Valid @RequestBody StudentRequestDTO studentsRequestDTO){
+
+        return studentService.createStudentDetiles(studentsRequestDTO);
     }
 
 
     @DeleteMapping("/deleteStudent/{roll_no}")
-    public ResponseEntity< String> deleteStudentDetiles(@PathVariable Long roll_no){
-        try{
-      String status = studentService.deleteStudentDetiles(roll_no);
-      return new ResponseEntity<>(status,HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-           return  new ResponseEntity<>( e.getReason(),e.getStatusCode());
+    public ResponseEntity< StudentRequestDTO> deleteStudentDetiles(@PathVariable Long roll_no){
 
-        }
+            StudentRequestDTO status = studentService.deleteStudentDetiles(roll_no);
+      return new ResponseEntity<>(status,HttpStatus.OK);
     }
     
     @PutMapping("/updateStudent/{roll_no}")
-    public ResponseEntity<String> updateStudentDetiles(@PathVariable Long roll_no , @RequestBody Students students){
-        try {
-            studentService.updateStudentsDetiles(roll_no, students);
-            return new ResponseEntity<>("Category id :"+roll_no +" is Updated", HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(),e.getStatusCode());  // one type Respone Enity Usage
-        }
+    public ResponseEntity<StudentRequestDTO> updateStudentDetiles(@PathVariable Long roll_no , @RequestBody StudentRequestDTO studentRequestDTO){
+
+        StudentRequestDTO updatedStudents =  studentService.updateStudentsDetiles(roll_no, studentRequestDTO);
+            return new ResponseEntity<>(updatedStudents, HttpStatus.OK);
+
     }
 }

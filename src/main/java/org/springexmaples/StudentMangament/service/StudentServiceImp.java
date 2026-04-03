@@ -1,7 +1,12 @@
 package org.springexmaples.StudentMangament.service;
 
+import org.modelmapper.ModelMapper;
+import org.springexmaples.BankingApiCustomerDetiles.Exception.ResourceNotFoundException;
 import org.springexmaples.StudentMangament.Repo.StudentRepo;
 import org.springexmaples.StudentMangament.model.Students;
+import org.springexmaples.StudentMangament.payload.StudentRequestDTO;
+import org.springexmaples.StudentMangament.payload.StudentResponseDTO;
+import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,56 +23,69 @@ public class StudentServiceImp implements StudentService{
     @Autowired
     StudentRepo studentRepo;
 //    Long nextId = 1L;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
-    public List<Students> getStudentDetiles() {
+    public StudentResponseDTO getStudentDetiles() {
+       List<Students> studentsList= studentRepo.findAll();
+       if(studentsList.isEmpty()){
+           throw new ApiExecption("No Student Details..!");
+       }
 
-        return studentRepo.findAll();
+       List<StudentRequestDTO> studentDetiles = studentsList.stream()
+               .map(student -> modelMapper.map(student,StudentRequestDTO.class))
+               .toList();
+
+       StudentResponseDTO studentResponseDTO = new StudentResponseDTO();
+       studentResponseDTO.setStudentData(studentDetiles);
+
+        return studentResponseDTO;
     }
 
     @Override
-    public void createStudentDetiles(Students students) {
-//        students.setRoll_no(nextId++);
-        studentRepo.save(students);
+    public StudentRequestDTO createStudentDetiles(StudentRequestDTO studentsRequestDTO) {
+        Students students = modelMapper.map(studentsRequestDTO, Students.class);
+
+
+         Students savedStudent = studentRepo.findByName(students.getName());
+         if(savedStudent!=null){
+             throw new ApiExecption("Student name:"+students.getName()+" is Available");
+         }
+
+       Students cretedStudents = studentRepo.save(students);
+         StudentRequestDTO createdStudentDto = modelMapper.map(cretedStudents, StudentRequestDTO.class);
+         return createdStudentDto;
+
     }
 
     @Override
-    public String deleteStudentDetiles(Long roll_no) {
-//        Students getStudent = studentsList.stream()
-//                .filter(s->s.getRoll_no().equals(roll_no))
-//                .findFirst().orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Student Not Found"));
-//
-//        studentsList.remove(getStudent);
+    public StudentRequestDTO deleteStudentDetiles(Long roll_no) {
+
        Students deleteStudent  = studentRepo.findById(roll_no)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource not found to Delete"));
-        studentRepo.delete(deleteStudent);
-    return "Student Detiles roll no"+roll_no+" delete";
+                .orElseThrow(()->new ResourceNotFoundException("Student Detiles","Student Roll No",roll_no));
+    studentRepo.delete(deleteStudent);
+
+
+    StudentRequestDTO studentdeletedDataDto = modelMapper.map(deleteStudent, StudentRequestDTO.class);
+    return studentdeletedDataDto;
 
 
 }
 
     @Override
-    public Students updateStudentsDetiles(Long roll_no, Students students) {
-//       Optional< Students>getStudent = studentsList.stream()
-//                .filter(s->s.getRoll_no().equals(roll_no))
-//                .findFirst();
-//
-//       if(getStudent.isPresent()){
-//           Students get = getStudent.get();
-////           get.setName(students.getName());
-////           get.setDept(students.getDept());
-//
-//           return get.setMarks(students.getMarks());
-//       }
-//       else{
-//           throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Student roll no not found");
-//       }
+    public StudentRequestDTO updateStudentsDetiles(Long roll_no, StudentRequestDTO studentRequestDTO) {
+ Students students = modelMapper.map(studentRequestDTO, Students.class);
 
-        Students updateStudent = studentRepo.findById(roll_no)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource Not found to Update"));
+
+        Students updateStudentFind = studentRepo.findById(roll_no)
+                .orElseThrow(()->new ResourceNotFoundException("Student Detiles ","Student Roll No " ,roll_no));
         students.setRoll_no(roll_no);
 
-        return studentRepo.save(students);
+       Students updatedStudent =studentRepo.save(students);
+       StudentRequestDTO updatedStudentDTO = modelMapper.map(updatedStudent, StudentRequestDTO.class);
+
+        return updatedStudentDTO;
     }
 
 

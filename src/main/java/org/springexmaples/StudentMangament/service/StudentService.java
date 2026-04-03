@@ -1,17 +1,19 @@
 package org.springexmaples.StudentMangament.service;
 
 import org.springexmaples.StudentMangament.model.Students;
+import org.springexmaples.StudentMangament.payload.StudentRequestDTO;
+import org.springexmaples.StudentMangament.payload.StudentResponseDTO;
 
 import java.util.List;
 
 public interface StudentService {
-    List<Students> getStudentDetiles();
+    StudentResponseDTO getStudentDetiles();
 
-    void createStudentDetiles(Students students);
+    StudentRequestDTO createStudentDetiles(StudentRequestDTO studentRequestDTO);
 
-    String deleteStudentDetiles(Long roll_no);
+    StudentRequestDTO deleteStudentDetiles(Long roll_no);
 
 
 
-    Students updateStudentsDetiles(Long rollNo, Students students);
+    StudentRequestDTO updateStudentsDetiles(Long rollNo,StudentRequestDTO studentRequestDTO);
 }

@@ -1,15 +1,17 @@
 package org.springexmaples.TaskManager.Service;
 
 import org.springexmaples.TaskManager.Model.TaskManager;
+import org.springexmaples.TaskManager.payload.TaskRequestDTO;
+import org.springexmaples.TaskManager.payload.TaskResponseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 public interface TaskManagerService {
-     List<TaskManager> getTask();
-     void createTask(TaskManager taskManager);
+     TaskResponseDTO getTask();
+     TaskRequestDTO createTask( TaskRequestDTO taskRequestDTO);
 
-    String deleteTask(Long taskManagerId);
-    TaskManager updateTask(TaskManager taskManager, Long taskManagerId);
+    TaskRequestDTO deleteTask(Long taskManagerId);
+    TaskRequestDTO updateTask( TaskRequestDTO taskRequestDTO, Long taskManagerId);
 }

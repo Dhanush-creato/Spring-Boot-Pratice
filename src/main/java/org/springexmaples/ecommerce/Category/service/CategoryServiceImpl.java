@@ -24,7 +24,7 @@ CategoryReposistory categoryReposistory;
     private ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getCategories() {
+    public CategoryResponse getCategories(Integer pageNumber ,Integer pageSize) {
         List<Category> categories = categoryReposistory.findAll();
         if(categories.isEmpty()){
             throw new ApiExecption("There is not Category's present");
@@ -53,46 +53,37 @@ CategoryReposistory categoryReposistory;
     }
 
     @Override
-    public String deleteCategory(Long categoryId) {
+    public  CategoryDTO deleteCategory(Long categoryId) {
 
 
         Category deleteCategory = categoryReposistory.findById(categoryId)
                 .orElseThrow(()->new ResourceNotFoundException("Category","Category Id",categoryId));
 
-//        List<Category> categories = categoryReposistory.findAll();
-//        Category category = categories.stream()
-//                .filter(ca ->ca.getCategoryId().equals(categoryId))
-//                .findFirst().orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Response not found"));
+
+        categoryReposistory.delete(deleteCategory);
+        CategoryDTO categoryDto = modelMapper.map(deleteCategory, CategoryDTO.class);
 
 
-
-       categoryReposistory.delete(deleteCategory);
-       return "Category-ID "+categoryId+ " Is Removed";
+       return categoryDto;
     }
 
     @Override
-    public Category updateCategory(Category category, Long categoryId) {
+    public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId) {
        categoryReposistory.findById(categoryId)
                 .orElseThrow(()-> new ResourceNotFoundException("Category","Category Id",categoryId));  // it will find the id file and return error
 
-        category.setCategoryId(categoryId); // what will give in update will set the given id and will update in category list
-        return categoryReposistory.save(category);        // it will save and return
 
-//        List<Category> categories = categoryReposistory.findAll();
-//        Optional<Category> optionalCategory = categories.stream()
-//                .filter(ca ->ca.getCategoryId().equals(categoryId))
-//                .findFirst();
-//
-//        if(optionalCategory.isPresent()){
-//            Category exstingCategory = optionalCategory.get();
-//            exstingCategory.setCategoryName(category.getCategoryName());
-//
-//          return categoryReposistory.save(exstingCategory);
-//        }
-//
-//        else{
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Id not found");
-//        }
+        Category category = modelMapper.map(categoryDTO, Category.class);
+
+        category.setCategoryId(categoryId);// what will give in update will set the given id and will update in category list
+
+        Category updatedCategory = categoryReposistory.save(category);
+
+         CategoryDTO updatedCategoryDTO = modelMapper.map(updatedCategory, CategoryDTO.class);
+
+        return updatedCategoryDTO;      // it will save and return
+
+
 
     }
 
