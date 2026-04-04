@@ -1,6 +1,7 @@
 package org.springexmaples.ecommerce.Category.controller;
 
 import jakarta.validation.Valid;
+import org.springexmaples.ecommerce.Category.config.AppConst;
 import org.springexmaples.ecommerce.Category.payload.CategoryDTO;
 import org.springexmaples.ecommerce.Category.payload.CategoryResponse;
 import org.springexmaples.ecommerce.Category.service.CategoryService;
@@ -17,8 +18,8 @@ public class CategoryController {
 
 @GetMapping("/api/public/categories")
     public ResponseEntity<CategoryResponse> getCategories(
-            @RequestParam(name="pageNumber") Integer pageNumber,
-            @RequestParam(name="pageSize") Integer pageSize
+            @RequestParam(name="pageNumber",defaultValue = AppConst.PAGE_NUMBER ,required = false) Integer pageNumber,  //first step to pagination we need parameter's
+            @RequestParam(name="pageSize" ,defaultValue = AppConst.PAGE_SIZE,required = false) Integer pageSize
 ) {
         CategoryResponse categories = categoryService.getCategories(pageNumber,pageSize);
     return new ResponseEntity<>(categories,HttpStatus.OK);
