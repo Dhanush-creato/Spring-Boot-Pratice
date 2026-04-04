@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentRequestDTO {
-    private Long rollNo;
-    private String name;
-    private Integer marks;
+public class ApiResponse {
+    protected String message;
+    protected boolean status;
 }

@@ -1,7 +1,9 @@
 package org.springexmaples.StudentMangament.Execption;
 
 import org.springexmaples.BankingApiCustomerDetiles.Exception.ResourceNotFoundException;
+import org.springexmaples.StudentMangament.payload.ApiResponse;
 import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
+import org.springexmaples.ecommerce.Category.payload.ApiRespose;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -24,13 +26,17 @@ public class GobalExecption {
         return new ResponseEntity<>(execption, HttpStatus.BAD_REQUEST) ;
     }
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> myExecption(ResourceNotFoundException e){
+    public ResponseEntity<ApiResponse> myExecption(ResourceNotFoundException e){
         String message = e.getMessage();
-        return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
+        ApiResponse apiRespose = new ApiResponse(message,false);
+
+        return new ResponseEntity<>(apiRespose,HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(ApiExecption.class)
-    public ResponseEntity<String> myExecption(ApiExecption e){
+    public ResponseEntity<ApiResponse> myExecption(ApiExecption e){
         String message = e.getMessage();
-        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+        ApiResponse apiRespose = new ApiResponse(message,false);
+
+        return new ResponseEntity<>(apiRespose,HttpStatus.BAD_REQUEST);
     }
 }

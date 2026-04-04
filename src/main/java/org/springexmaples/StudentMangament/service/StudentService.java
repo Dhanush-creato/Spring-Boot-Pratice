@@ -7,11 +7,11 @@ import org.springexmaples.StudentMangament.payload.StudentResponseDTO;
 import java.util.List;
 
 public interface StudentService {
-    StudentResponseDTO getStudentDetiles();
+    StudentResponseDTO getStudentDetiles(Integer pageNumber,Integer pageSize,String orderBy,String orderDirection);
 
     StudentRequestDTO createStudentDetiles(StudentRequestDTO studentRequestDTO);
 
-    StudentRequestDTO deleteStudentDetiles(Long roll_no);
+    StudentRequestDTO deleteStudentDetiles(Long rollNo);
 
 
 

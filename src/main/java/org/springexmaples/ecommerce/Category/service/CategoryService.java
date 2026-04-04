@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CategoryService {
 
-     CategoryResponse getCategories(Integer pageNumber,Integer pageSize); //second step on pagination
+     CategoryResponse getCategories(Integer pageNumber,Integer pageSize ,String sortBy,String sortOrder); //second step on pagination
     CategoryDTO createCategory(CategoryDTO categoryDTO);
 
     CategoryDTO deleteCategory(Long categoryId);

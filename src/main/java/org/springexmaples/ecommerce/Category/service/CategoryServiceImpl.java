@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,9 +28,10 @@ CategoryReposistory categoryReposistory;
     private ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getCategories(Integer pageNumber ,Integer pageSize) { //3rd step in pagination
-
-        Pageable pageDetiles = PageRequest.of(pageNumber,pageSize);
+    public CategoryResponse getCategories(Integer pageNumber ,Integer pageSize,String sortBy,String sortOrder) { //3rd step in pagination
+        Sort sortByandOrder = sortOrder.equalsIgnoreCase("asc")?Sort.by(sortBy).ascending()
+                :Sort.by(sortBy).descending();
+        Pageable pageDetiles = PageRequest.of(pageNumber,pageSize,sortByandOrder);
         Page<Category> categoryPage = categoryReposistory.findAll(pageDetiles);
         List<Category> categories = categoryPage.getContent();
 
@@ -48,11 +50,13 @@ CategoryReposistory categoryReposistory;
         categoryResponse.setTotalElements(categoryPage.getTotalElements());
         categoryResponse.setTotalPages(categoryPage.getTotalPages());
         categoryResponse.setIsLast(categoryPage.isLast());
+        categoryResponse.setSortBy(String.valueOf(categoryPage.getSort()));
         return categoryResponse ;
     }
 
     @Override
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+
  Category category = modelMapper.map(categoryDTO, Category.class); // to convert from Dto to category  and assign to category
         Category savedCategory = categoryReposistory.findByCategoryName(category.getCategoryName());
         if(savedCategory !=null){

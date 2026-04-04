@@ -19,9 +19,12 @@ public class CategoryController {
 @GetMapping("/api/public/categories")
     public ResponseEntity<CategoryResponse> getCategories(
             @RequestParam(name="pageNumber",defaultValue = AppConst.PAGE_NUMBER ,required = false) Integer pageNumber,  //first step to pagination we need parameter's
-            @RequestParam(name="pageSize" ,defaultValue = AppConst.PAGE_SIZE,required = false) Integer pageSize
+            @RequestParam(name="pageSize" ,defaultValue = AppConst.PAGE_SIZE,required = false) Integer pageSize,
+            @RequestParam(name="sortBy" ,defaultValue = AppConst.SORT_BY,required = false) String sortBy,
+            @RequestParam(name="sortOrder" ,defaultValue = AppConst.SORT_ORDER,required = false) String sortOrder
+
 ) {
-        CategoryResponse categories = categoryService.getCategories(pageNumber,pageSize);
+        CategoryResponse categories = categoryService.getCategories(pageNumber,pageSize,sortBy,sortOrder);
     return new ResponseEntity<>(categories,HttpStatus.OK);
     } //done dto
 

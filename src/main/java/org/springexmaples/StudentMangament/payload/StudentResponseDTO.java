@@ -11,4 +11,12 @@ import java.util.List;
 public class StudentResponseDTO {
 
     private List<StudentRequestDTO> studentData;
+    private Integer pageNumber;
+    private  Integer pageSize;
+    private Long totalElements;
+    private Integer totalPages;
+    private Boolean isLast;
+    private String orderBy;
+
+
 }

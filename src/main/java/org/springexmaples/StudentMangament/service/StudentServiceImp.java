@@ -8,6 +8,10 @@ import org.springexmaples.StudentMangament.payload.StudentRequestDTO;
 import org.springexmaples.StudentMangament.payload.StudentResponseDTO;
 import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,8 +31,14 @@ public class StudentServiceImp implements StudentService{
     private ModelMapper modelMapper;
 
     @Override
-    public StudentResponseDTO getStudentDetiles() {
-       List<Students> studentsList= studentRepo.findAll();
+    public StudentResponseDTO getStudentDetiles(Integer pageNumber ,Integer pageSize,String orderBy, String orderDirection) {
+        Sort sortByAndDirection = orderDirection.equalsIgnoreCase("asc")? Sort.by(orderBy).ascending():
+                Sort.by(orderBy).descending();
+
+        Pageable studentPagesCreation = PageRequest.of(pageNumber,pageSize,sortByAndDirection);
+        Page<Students> studentPages =  studentRepo.findAll(studentPagesCreation);
+
+       List<Students> studentsList= studentPages.getContent();
        if(studentsList.isEmpty()){
            throw new ApiExecption("No Student Details..!");
        }
@@ -39,6 +49,12 @@ public class StudentServiceImp implements StudentService{
 
        StudentResponseDTO studentResponseDTO = new StudentResponseDTO();
        studentResponseDTO.setStudentData(studentDetiles);
+       studentResponseDTO.setPageNumber(studentPages.getNumber());
+       studentResponseDTO.setPageSize(studentPages.getSize());
+       studentResponseDTO.setTotalElements(studentPages.getTotalElements());
+       studentResponseDTO.setTotalPages(studentPages.getTotalPages());
+       studentResponseDTO.setIsLast(studentPages.isLast());
+       studentResponseDTO.setOrderBy(String.valueOf(studentPages.getSort()));
 
         return studentResponseDTO;
     }
@@ -60,10 +76,10 @@ public class StudentServiceImp implements StudentService{
     }
 
     @Override
-    public StudentRequestDTO deleteStudentDetiles(Long roll_no) {
+    public StudentRequestDTO deleteStudentDetiles(Long rollNo) {
 
-       Students deleteStudent  = studentRepo.findById(roll_no)
-                .orElseThrow(()->new ResourceNotFoundException("Student Detiles","Student Roll No",roll_no));
+       Students deleteStudent  = studentRepo.findById(rollNo)
+                .orElseThrow(()->new ResourceNotFoundException("Student Detiles","Student Roll No",rollNo));
     studentRepo.delete(deleteStudent);
 
 
@@ -74,13 +90,13 @@ public class StudentServiceImp implements StudentService{
 }
 
     @Override
-    public StudentRequestDTO updateStudentsDetiles(Long roll_no, StudentRequestDTO studentRequestDTO) {
+    public StudentRequestDTO updateStudentsDetiles(Long rollNo, StudentRequestDTO studentRequestDTO) {
  Students students = modelMapper.map(studentRequestDTO, Students.class);
 
 
-        Students updateStudentFind = studentRepo.findById(roll_no)
-                .orElseThrow(()->new ResourceNotFoundException("Student Detiles ","Student Roll No " ,roll_no));
-        students.setRoll_no(roll_no);
+        Students updateStudentFind = studentRepo.findById(rollNo)
+                .orElseThrow(()->new ResourceNotFoundException("Student Detiles ","Student Roll No " ,rollNo));
+        students.setRollNo(rollNo);
 
        Students updatedStudent =studentRepo.save(students);
        StudentRequestDTO updatedStudentDTO = modelMapper.map(updatedStudent, StudentRequestDTO.class);

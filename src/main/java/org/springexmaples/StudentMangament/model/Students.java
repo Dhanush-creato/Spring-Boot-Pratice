@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Students {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roll_no;
+    private Long rollNo;
     @NotBlank(message = "Name should be contain")
     private String name;
     @NotNull(message = "Marks should not be Null")
