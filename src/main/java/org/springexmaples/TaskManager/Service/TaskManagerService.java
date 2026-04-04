@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 public interface TaskManagerService {
-     TaskResponseDTO getTask();
+     TaskResponseDTO getTask(Integer pageNumber,Integer pageSize,String sortBy,String sortDirection);
      TaskRequestDTO createTask( TaskRequestDTO taskRequestDTO);
 
     TaskRequestDTO deleteTask(Long taskManagerId);

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springexmaples.TaskManager.Model.TaskManager;
 import org.springexmaples.TaskManager.Service.TaskManagerService;
+import org.springexmaples.TaskManager.config.AppConst;
 import org.springexmaples.TaskManager.payload.TaskRequestDTO;
 import org.springexmaples.TaskManager.payload.TaskResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,11 @@ public class TaskManagerController {
     private TaskManagerService taskManagerService;
     
     @GetMapping("/public/getTask")
-    public TaskResponseDTO getTask(){
-        TaskResponseDTO getTask =taskManagerService.getTask();
+    public TaskResponseDTO getTask( @RequestParam(defaultValue = AppConst.PAGE_NUMBER ,required = false) Integer pageNumber,
+                                    @RequestParam(defaultValue = AppConst.PAGE_SIZE,required = false) Integer pageSize,
+                                    @RequestParam(defaultValue = AppConst.SORT_BY,required = false) String sortBy,
+                                    @RequestParam(defaultValue =  AppConst.SORT_DIRECTION ,required = false) String sortDirection){
+        TaskResponseDTO getTask =taskManagerService.getTask(pageNumber,pageSize,sortBy,sortDirection);
         return  getTask;
     }
 

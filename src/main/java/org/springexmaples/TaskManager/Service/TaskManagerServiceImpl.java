@@ -9,6 +9,10 @@ import org.springexmaples.TaskManager.payload.TaskRequestDTO;
 import org.springexmaples.TaskManager.payload.TaskResponseDTO;
 import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,8 +31,13 @@ public class TaskManagerServiceImpl implements  TaskManagerService{
 
 
     @Override
-    public TaskResponseDTO getTask() {
-        List<TaskManager> getTaskData = taskManagerRepo.findAll();
+    public TaskResponseDTO getTask(Integer pageNumber,Integer pageSize,String sortBy,String sortDirection) {
+        Sort sortByAndDirection = sortDirection.equalsIgnoreCase("asc")?Sort.by(sortBy).ascending()
+                :Sort.by(sortBy).descending();
+        Pageable taskPagesGet = PageRequest.of(pageNumber,pageSize,sortByAndDirection);
+        Page<TaskManager> taskPages = taskManagerRepo.findAll(taskPagesGet);
+
+        List<TaskManager> getTaskData = taskPages.getContent() ;
 
         if(getTaskData.isEmpty()){
             throw new ApiExecption("No Task -->Create a Task!!!");
@@ -39,7 +48,12 @@ public class TaskManagerServiceImpl implements  TaskManagerService{
 
         TaskResponseDTO taskResponseDTO = new TaskResponseDTO();
        taskResponseDTO.setTaskData(getTaskListDTO);
-
+       taskResponseDTO.setPageNumber(taskPages.getNumber());
+       taskResponseDTO.setPageSize(taskPages.getSize());
+       taskResponseDTO.setTotalElements(taskPages.getTotalElements());
+       taskResponseDTO.setTotalPages(taskPages.getTotalPages());
+       taskResponseDTO.setIsLast(taskPages.isLast());
+       taskResponseDTO.setSortBy(String.valueOf(taskPages.getSort()));
         return taskResponseDTO;
     }
 

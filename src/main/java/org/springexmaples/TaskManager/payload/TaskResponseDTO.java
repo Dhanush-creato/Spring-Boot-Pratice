@@ -11,4 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 public class TaskResponseDTO {
     private List<TaskRequestDTO> taskData;
+    private Integer pageNumber;
+    private  Integer pageSize;
+    private Long totalElements;
+    private Integer totalPages;
+    private Boolean isLast;
+    private String sortBy;
 }
