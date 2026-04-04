@@ -4,6 +4,9 @@ import jakarta.validation.Valid;
 import org.springexmaples.BankingApiCustomerDetiles.Model.BankCustomer;
 import org.springexmaples.BankingApiCustomerDetiles.Service.BankCustomerService;
 
+import org.springexmaples.BankingApiCustomerDetiles.config.DefaultValues;
+import org.springexmaples.BankingApiCustomerDetiles.payload.CustomerDTO;
+import org.springexmaples.BankingApiCustomerDetiles.payload.CustomerResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,40 +22,42 @@ public class BankCustomerController {
     BankCustomerService bankCustomerService;
 
     @GetMapping("/api/getCustomers")
-    public ResponseEntity<List<BankCustomer>> getCustomers(){
-        List<BankCustomer> customer = bankCustomerService.getCustomer();
+    public ResponseEntity<CustomerResponseDTO> getCustomers(@RequestParam(defaultValue = DefaultValues.PAGE_NUMBER ,required = false) Integer pageNumber,
+                                                            @RequestParam(defaultValue = DefaultValues.PAGE_SIZE ,required = false) Integer pageSize,
+                                                            @RequestParam(defaultValue = DefaultValues.SORT_BY ,required = false) String sortBy,
+                                                            @RequestParam(defaultValue = DefaultValues.SORT_DIRECTION ,required = false) String sortDirection){
+       CustomerResponseDTO customer = bankCustomerService.getCustomer(pageNumber,pageSize,sortBy,sortDirection);
         return new ResponseEntity<>(customer,HttpStatus.OK);
     }
     @GetMapping("/api/getCustomers/{id}")
-    public ResponseEntity<Optional<BankCustomer>> getCustomers(@PathVariable Long id){
-        Optional<BankCustomer> customer = bankCustomerService.getCustomerWithId(id);
+    public ResponseEntity<CustomerResponseDTO> getCustomers(@PathVariable Long id,@RequestParam(defaultValue = DefaultValues.PAGE_NUMBER ,required = false) Integer pageNumber,
+                                                            @RequestParam(defaultValue = DefaultValues.PAGE_SIZE ,required = false) Integer pageSize,
+                                                            @RequestParam(defaultValue = DefaultValues.SORT_BY ,required = false) String sortBy,
+                                                            @RequestParam(defaultValue = DefaultValues.SORT_DIRECTION ,required = false) String sortDirection){
+        CustomerResponseDTO customer = bankCustomerService.getCustomerWithId(id,pageNumber,pageSize,sortBy,sortDirection);
         return new ResponseEntity<>(customer,HttpStatus.OK);
     }
     @PostMapping("/api/postCustomers")
-    public ResponseEntity<String> postCustomers(@Valid @RequestBody BankCustomer bankCustomer){
-        bankCustomerService.postCustomer(bankCustomer);
-        return new ResponseEntity<>("File is Updated",HttpStatus.CREATED) ;
+    public ResponseEntity<CustomerDTO> postCustomers(@Valid @RequestBody   CustomerDTO customerDTO){
+        CustomerDTO savedData= bankCustomerService.postCustomer(customerDTO);
+        return new ResponseEntity<>(savedData,HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/api/deleteCustomer/{id}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable Long id){
-        try {
-            bankCustomerService.deleteCustomer(id);
-            return new ResponseEntity<>(" The file id with" + id + " is been Deleted", HttpStatus.OK);
-        }
-        catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(),e.getStatusCode());
-        }
+    public ResponseEntity<CustomerDTO> deleteCustomer(@PathVariable Long id){
+
+        CustomerDTO deletedCustomer= bankCustomerService.deleteCustomer(id);
+            return new ResponseEntity<>(deletedCustomer, HttpStatus.OK);
+
+
     }
 
     @PutMapping("/api/updateCustomer/{id}")
-    public ResponseEntity<String> updateCustomers(@RequestBody BankCustomer bankCustomer ,@PathVariable Long id){
-        try {
-            bankCustomerService.updateCustomer(bankCustomer, id);
-            return new ResponseEntity<>(" The file id with " + id + " is been updated", HttpStatus.CREATED);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(),e.getStatusCode());
-        }
+    public ResponseEntity<CustomerDTO> updateCustomers(@RequestBody CustomerDTO customerDTO ,@PathVariable Long id){
+
+            CustomerDTO updatedCustomer =   bankCustomerService.updateCustomer(customerDTO, id);
+            return new ResponseEntity<>(updatedCustomer, HttpStatus.CREATED);
+
     }
 
 }

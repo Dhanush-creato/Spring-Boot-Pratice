@@ -25,7 +25,7 @@ public class BankCustomer {
     @NotEmpty
     private String email;
     @Column(unique = true)
-    @Size(min=10 ,message = "Should Contain 10 Numbers")
+    @Size(min=10,max = 10,message = "Should Contain only 10 Numbers without country code")
     private String phoneNumber;
 
 //    public Long getId() {

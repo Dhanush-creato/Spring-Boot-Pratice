@@ -1,5 +1,7 @@
 package org.springexmaples.BankingApiCustomerDetiles.Exception;
 
+import org.springexmaples.BankingApiCustomerDetiles.payload.ApiResponse;
+import org.springexmaples.ecommerce.Category.Execption.ApiExecption;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +47,17 @@ public class GobalExecption {
         }
 
         @ExceptionHandler(ResourceNotFoundException.class)
-        public ResponseEntity<String> myResponseException(ResourceNotFoundException e){
+        public ResponseEntity<ApiResponse> myResponseException(ResourceNotFoundException e){
              String message = e.getMessage();
+             ApiResponse apiResponse = new ApiResponse(message,false);
+             return new ResponseEntity<>(apiResponse,HttpStatus.NOT_FOUND);
+        }
 
-             return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
+        @ExceptionHandler(ApiExecption.class)
+    public ResponseEntity<ApiResponse> myApiException(ApiExecption e){
+        String message = e.getMessage();
+            ApiResponse apiResponse = new ApiResponse(message,false);
+            return new ResponseEntity<>(apiResponse,HttpStatus.NOT_FOUND);
         }
     }
 
