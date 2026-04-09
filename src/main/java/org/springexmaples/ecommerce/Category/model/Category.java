@@ -3,10 +3,17 @@ package org.springexmaples.ecommerce.Category.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity(name = "categories")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Category {
 
     @Id
@@ -17,30 +24,7 @@ public class Category {
 
     private  String categoryName ;
 
-    public Long getCategoryId() {
-        return categoryId;
-    }
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 
-    public void setCategoryId(Long categoryId) {
-
-        this.categoryId = categoryId;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public Category setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-        return this;
-    }
-
-
-    public Category(Long categoryId, String categoryName) {
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-    }
-
-    public Category() {
-    }
 }
