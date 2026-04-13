@@ -26,7 +26,8 @@ public class ProductServiceImpl implements ProductService {
     ModelMapper modelMapper;
 
     @Override
-    public ProductDTO createProduct(Long categoryId, Product product) {
+    public ProductDTO createProduct(Long categoryId, ProductDTO productDTO) {
+        Product product = modelMapper.map(productDTO, Product.class);
         Product savedproducts = productReposistory.findByProductName(product.getProductName());
         if (savedproducts != null) {
             throw new ApiExecption("The product " + product.getProductName() + " is Available ");
@@ -41,8 +42,8 @@ public class ProductServiceImpl implements ProductService {
 
         product.setSpecialPrice(specialPrice);
             Product product1 = productReposistory.save(product);
-            ProductDTO productDTO = modelMapper.map(product1, ProductDTO.class);
-            return productDTO;
+            ProductDTO productDTOMain = modelMapper.map(product1, ProductDTO.class);
+            return productDTOMain;
 
     }
 
@@ -95,5 +96,27 @@ public class ProductServiceImpl implements ProductService {
         ProductResponse productResponses = new ProductResponse();
         productResponses.setProducts(products);
         return productResponses;
+    }
+
+    @Override
+    public ProductDTO updateCategory(ProductDTO productDTO, Long productId) {
+        Product product = modelMapper.map(productDTO,Product.class);
+       productReposistory.findById(productId).orElseThrow(()->new ResourceNotFoundException("products","ProductID",productId));
+        product.setId(productId);
+        product.setImage("Default.img");
+        double specialPrice = (product.getPrice() -( product.getDiscount()*0.01 )*product.getPrice());
+
+        product.setSpecialPrice(specialPrice);
+       Product updateProduct = productReposistory.save(product);
+       ProductDTO productDTOs = modelMapper.map(updateProduct, ProductDTO.class);
+        return productDTOs;
+    }
+
+    @Override
+    public ProductDTO deleteService(Long productId) {
+      Product deleted =  productReposistory.findById(productId).orElseThrow(()->new ResourceNotFoundException("Product","Product Id",productId));
+         productReposistory.delete(deleted);
+         ProductDTO productDTO = modelMapper.map(deleted, ProductDTO.class);
+        return productDTO;
     }
 }

@@ -18,9 +18,9 @@ public class ProductController {
     @Autowired
     ProductService productService;
     @PostMapping("/admin/category/{category_id}/product")
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody Product product , @PathVariable Long category_id){
-       ProductDTO productDTO =  productService.createProduct(category_id,product);
-        return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO , @PathVariable Long category_id){
+       ProductDTO productDTOadeed =  productService.createProduct(category_id,productDTO);
+        return new ResponseEntity<>(productDTOadeed, HttpStatus.CREATED);
     }
 
     @GetMapping("/admin/products")
@@ -37,5 +37,17 @@ public class ProductController {
     public ResponseEntity<ProductResponse> getCategoryById(@PathVariable String keyword){
         ProductResponse productResponsebyId = productService.getProductsByKeyword(keyword);
         return new ResponseEntity<>(productResponsebyId,HttpStatus.OK);
+    }
+
+    @PutMapping("/admin/products/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long productId){
+        ProductDTO updatedProduct = productService.updateCategory(productDTO,productId);
+        return new ResponseEntity<>(updatedProduct,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/admin/products/{productId}")
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long productId){
+        ProductDTO deleteProduct = productService.deleteService(productId);
+        return new ResponseEntity<>(deleteProduct,HttpStatus.OK);
     }
 }

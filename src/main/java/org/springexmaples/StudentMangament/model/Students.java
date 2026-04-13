@@ -1,9 +1,6 @@
 package org.springexmaples.StudentMangament.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,6 +20,9 @@ public class Students {
     @NotNull(message = "Marks should not be Null")
     private Integer marks;
 
+    @ManyToOne()
+    @JoinColumn(name="dept_id")
+    private Department department;
 //
 //    public Students() {
 //    }

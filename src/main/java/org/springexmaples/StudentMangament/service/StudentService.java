@@ -1,6 +1,8 @@
 package org.springexmaples.StudentMangament.service;
 
+import org.springexmaples.StudentMangament.model.Department;
 import org.springexmaples.StudentMangament.model.Students;
+import org.springexmaples.StudentMangament.payload.DepartmentDTO;
 import org.springexmaples.StudentMangament.payload.StudentRequestDTO;
 import org.springexmaples.StudentMangament.payload.StudentResponseDTO;
 
@@ -16,4 +18,6 @@ public interface StudentService {
 
 
     StudentRequestDTO updateStudentsDetiles(Long rollNo,StudentRequestDTO studentRequestDTO);
+
+
 }
